@@ -1,0 +1,29 @@
+version: "3.5"
+
+services:
+    php-apache:
+        image: senseshare/php-apache
+        ports:
+            - 8080:80
+            - 8443:443
+        volumes:
+            - ./web:/var/www/html
+            - ./config:/var/www/config
+        restart: always
+
+    mysql:
+        image: senseshare/mysql
+        volumes:
+            - ./mysql:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: "password"
+        restart: always
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - 4040:80
+        environment:
+            PMA_HOST: "mysql"
+            PMA_USER: "root"
+            PMA_PASSWORD: "password"
