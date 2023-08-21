@@ -38,6 +38,14 @@ header {
   padding-bottom: 20px;
 }
 
+.btnnavbar-brand {
+  font-size: 1rem;
+}
+
+.nav-icon {
+  font-size: 1.3rem;
+}
+
 .complete-icon {
   font-size: 3rem;
   color: green;
