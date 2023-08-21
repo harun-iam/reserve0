@@ -28,3 +28,17 @@ header {
 .table {
   background: #fff;  
 }
+
+.card {
+  border: none;
+}
+
+.card-title {
+  font-size: 1rem;
+  padding-bottom: 20px;
+}
+
+.complete-icon {
+  font-size: 3rem;
+  color: green;
+}
