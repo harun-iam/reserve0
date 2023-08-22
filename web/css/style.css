@@ -18,7 +18,7 @@ h1 {
   padding: 10px;
 }
 
-header {
+header{
   text-align: center;
   background: #000;
   color: #fff;
@@ -26,7 +26,7 @@ header {
 }
 
 .table {
-  background: #fff;  
+  background: #fff;
 }
 
 .card {
@@ -38,15 +38,15 @@ header {
   padding-bottom: 20px;
 }
 
-.btnnavbar-brand {
+.complete-icon {
+  font-size: 3rem;
+  color: green;
+}
+
+.navbar-brand {
   font-size: 1rem;
 }
 
 .nav-icon {
   font-size: 1.3rem;
-}
-
-.complete-icon {
-  font-size: 3rem;
-  color: green;
 }
