@@ -2,7 +2,7 @@
 
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
   //POSTパラメータから各種入力値を受け取る
-  $reserve_data = $_POST['reserve_data'];
+  $reserve_date = $_POST['reserve_date'];
   $reserve_num = $_POST['reserve_num'];
   $reserve_time = $_POST['reserve_time'];
   $name = $_POST['name'];
@@ -37,7 +37,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
   <form class="m-3" method="post">
     <div class="mb-3">
       <label for="exampleFormControlInput1" class="form-label">【1】予約日を選択</label>
-      <select class="form-select" name="reserve-date">
+      <select class="form-select" name="reserve_date">
       <option selected>日付</option>
         <option value="1">One</option>
         <option value="2">Two</option>
