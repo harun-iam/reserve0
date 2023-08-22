@@ -1,30 +1,44 @@
+<?php
+
+if($_SERVER['REQUEST_METHOD'] == 'POST') {
+  //POSTパラメータから各種入力値を受け取る
+  $reserve_data = $_POST['reserve_data'];
+  $reserve_num = $_POST['reserve_num'];
+  $reserve_time = $_POST['reserve_time'];
+  $name = $_POST['name'];
+  $email = $_POST['email'];
+  $tel = $_POST['tel'];
+  $comment = $_POST['comment'];
+}
+?>
+
 <!doctype html>
 <html lang="ja">
 
 <head>
+<base href="http://localhost/reserve0/web/">
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-  <!-- Original CSS -->
-  <link rel="stylesheet" href="/css/style.css">
-
+  <!-- Original CSS-->
+  <link rel="stylesheet" href="css/style.css">
   <title>ご来店予約</title>
 </head>
 
 <body>
   <header>SAMPLE SHOP</header>
-
   <h1>ご来店予約</h1>
 
-  <form class="m-3"  method="post" action="confirm.php">
+  <form class="m-3" method="post">
     <div class="mb-3">
       <label for="exampleFormControlInput1" class="form-label">【1】予約日を選択</label>
-      <select class="form-select" aria-label="Default select example">
-        <option selected>日付</option>
+      <select class="form-select" name="reserve-date">
+      <option selected>日付</option>
         <option value="1">One</option>
         <option value="2">Two</option>
         <option value="3">Three</option>
@@ -32,7 +46,7 @@
     </div>
     <div class="mb-3">
       <label for="exampleFormControlInput1" class="form-label">【2】人数を選択</label>
-      <select class="form-select" aria-label="Default select example">
+      <select class="form-select" name="reserve_num">
         <option selected>人数</option>
         <option value="1">One</option>
         <option value="2">Two</option>
@@ -41,7 +55,7 @@
     </div>
     <div class="mb-3">
       <label for="exampleFormControlInput1" class="form-label">【3】予約時間を選択</label>
-      <select class="form-select" aria-label="Default select example">
+      <select class="form-select" name="reserve_time">
         <option selected>時間</option>
         <option value="1">One</option>
         <option value="2">Two</option>
@@ -50,28 +64,32 @@
     </div>
     <div class="mb-3">
       <label for="exampleFormControlInput1" class="form-label">【4】予約者情報を入力</label>
-      <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="氏名">
+      <input type="text" class="form-control" name="name" placeholder="氏名">
     </div>
     <div class="mb-3">
-      <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="メールアドレス">
+      <input type="text" class="form-control" name="email" placeholder="メールアドレス">
     </div>
     <div class="mb-3">
-      <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="電話番号">
+      <input type="text" class="form-control" name="tel" placeholder="電話番号">
     </div>
     <div class="mb-3">
       <label for="exampleFormControlTextarea1" class="form-label">【5】備考欄</label>
-      <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="備考欄"></textarea>
+      <textarea class="form-control" name="comment" rows="3" placeholder="備考欄"></textarea>
     </div>
+
     <div class="d-grid gap-2">
       <button class="btn btn-primary rounded-pill" type="submit">確認画面へ</button>
       <button class="btn btn-secondary rounded-pill" type="button">戻る</button>
     </div>
+
   </form>
 
   <!-- Optional JavaScript; choose one of the two! -->
 
   <!-- Option 1: Bootstrap Bundle with Popper -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
 
   <!-- Option 2: Separate Popper and Bootstrap JS -->
   <!--
