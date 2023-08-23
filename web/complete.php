@@ -27,7 +27,7 @@
     <i class="bi bi-check-lg complete-icon"></i>
       <h2 class="card-title">予約が完了しました。</h2>
       <div class="d-grid gap-2 my-3">
-        <a class="btn btn-primary rounded-pill" href="/">TOPに戻る</a>
+        <a class="btn btn-primary rounded-pill" href="http://localhost/reserve0test/web/index.php">TOPに戻る</a>
       </div>
     </div>
   </div>

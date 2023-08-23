@@ -50,7 +50,7 @@
 
   <div class="d-grid gap-2 mx-3">
     <a class="btn btn-primary rounded-pill" href="complete.php">予約確定</a>
-    <a class="btn btn-secondary rounded-pill" href="/">戻る</a>
+    <a class="btn btn-secondary rounded-pill" href="http://localhost/reserve0test/web/index.php">戻る</a>
   </div>
 
   <!-- Optional JavaScript; choose one of the two! -->
