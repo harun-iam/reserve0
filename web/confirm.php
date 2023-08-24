@@ -3,6 +3,16 @@ require_once 'functions.php';
 
 session_start();
 
+//DBに接続
+$pdo = new PDO('mysql:dbname=' . DB_NAME . ';host=' . DB_HOST . ';', DB_USER, DB_PASSWORD);
+$pdo->query('SET NAMES utf8;');
+
+//shopデータを取得
+$stmt = $pdo->prepare('SELECT * FROM shop WHERE id = :id');
+$stmt->bindValue(':id', 1, PDO::PARAM_INT);
+$stmt->execute();
+$shop = $stmt->fetch();
+
 //予約確定ボタンが推された場合の処理
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   //セッションから入力情報を取得する
@@ -15,32 +25,41 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $tel = $_SESSION['RESERVE']['tel'];
     $comment = $_SESSION['RESERVE']['comment'];
 
-
     //TODO:予約が確定可能かどうか最終チェック
-
-    //DBに接続
-    $pdo = new PDO('mysql:dbname=' . DB_NAME . ';host=' . DB_HOST . ';', DB_USER, DB_PASSWORD);
-    $pdo->query('SET NAMES utf8;');
-
-
-    //reserveテーブルにINSERT
-    $stmt = $pdo->prepare('INSERT INTO reserve (reserve_date, reserve_time, reserve_num, name, email, tel, comment) VALUES (:reserve_date, :reserve_time, :reserve_num, :name, :email, :tel, :comment)');
+    //DBのreserveテーブルからその日時の「予約成立済み人数」を取得
+    $stmt = $pdo->prepare("SELECT SUM(reserve_num) FROM reserve 
+      WHERE DATE_FORMAT(reserve_date, '%Y%m%d') = :reserve_date AND DATE_FORMAT(reserve_time, '%H:%i') = :reserve_time 
+      GROUP BY reserve_date, reserve_time LIMIT 1");
     $stmt->bindValue(':reserve_date', $reserve_date, PDO::PARAM_STR);
     $stmt->bindValue(':reserve_time', $reserve_time, PDO::PARAM_STR);
-    $stmt->bindValue(':reserve_num', $reserve_num, PDO::PARAM_INT);
-    $stmt->bindValue(':name', $name, PDO::PARAM_STR);
-    $stmt->bindValue(':email', $email, PDO::PARAM_STR);
-    $stmt->bindValue(':tel', $tel, PDO::PARAM_STR);
-    $stmt->bindValue(':comment', $comment, PDO::PARAM_STR);
     $stmt->execute();
+    $reserve_count = $stmt->fetchColumn();
 
-    //予約者にメール送信
-    $from = 'From Web予約システムReserve <' . ADMIN_EMAIL . '>';
+    // 1時間当たりの予約上限チェック
+    if ($reserve_count && ($reserve_count + $reserve_num) > $shop['max_reserve_num']) {
+      $err['common'] = 'この日時はすでに予約が埋まっております。<br>予約画面に戻って予約情報を変更してください。';
+    }
 
-    $view_reserve_date = format_date($reserve_date);
+    //エラーが無ければ次の処理に進む
+    if (empty($err)) {
+      //reserveテーブルにINSERT
+      $stmt = $pdo->prepare('INSERT INTO reserve (reserve_date, reserve_time, reserve_num, name, email, tel, comment) VALUES (:reserve_date, :reserve_time, :reserve_num, :name, :email, :tel, :comment)');
+      $stmt->bindValue(':reserve_date', $reserve_date, PDO::PARAM_STR);
+      $stmt->bindValue(':reserve_time', $reserve_time, PDO::PARAM_STR);
+      $stmt->bindValue(':reserve_num', $reserve_num, PDO::PARAM_INT);
+      $stmt->bindValue(':name', $name, PDO::PARAM_STR);
+      $stmt->bindValue(':email', $email, PDO::PARAM_STR);
+      $stmt->bindValue(':tel', $tel, PDO::PARAM_STR);
+      $stmt->bindValue(':comment', $comment, PDO::PARAM_STR);
+      $stmt->execute();
 
-    $subject = 'ご予約が確定しました。';
-    $body = <<<EOT
+      //予約者にメール送信
+      $from = 'From Web予約システムReserve <' . ADMIN_EMAIL . '>';
+
+      $view_reserve_date = format_date($reserve_date);
+
+      $subject = 'ご予約が確定しました。';
+      $body = <<<EOT
     {$name}様
 
     以下の内容でご予約を承りました。
@@ -56,12 +75,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     ご来店お待ちしております。
     EOT;
 
-    //TODO:メール送信テストはサーバー上で実施
-    //mb_send_mail($email, $subject, $body, $from);
+      //TODO:メール送信テストはサーバー上で実施
+      //mb_send_mail($email, $subject, $body, $from);
 
-    //店舗管理者にメール送信
-    $subject = '【Reserve】ご予約が確定しました。';
-    $body = <<<EOT
+      //店舗管理者にメール送信
+      $subject = '【Reserve】ご予約が確定しました。';
+      $body = <<<EOT
      以下の内容でご予約が確定しました。
  
      ご予約内容
@@ -73,18 +92,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
      [備考]{$comment}
      EOT;
 
-    //TODO:メール送信テストはサーバー上で実施
-    //mb_send_mail(ADMIN_EMAIL, $subject, $body, $from);
+      //TODO:メール送信テストはサーバー上で実施
+      //mb_send_mail(ADMIN_EMAIL, $subject, $body, $from);
 
-    //予約が正常に完了したらセッションのデータをクリアする
-    unset($_SESSION['RESERVE']);
+      //予約が正常に完了したらセッションのデータをクリアする
+      unset($_SESSION['RESERVE']);
 
-    //DBから切断
-    unset($pdo);
+      //DBから切断
+      unset($pdo);
 
-    //予約完了画面の表示
-    header('Location: complete.php');
-    exit;
+      //予約完了画面の表示
+      header('Location: complete.php');
+      exit;
+    }
   } else {
     //セッションからデータを取得できない場合はエラー
     //TODO：エラー処理
@@ -113,6 +133,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   <h1>予約内容確認</h1>
 
   <form method="post">
+
+    <?php if (isset($err['common'])) : ?>
+      <div class="alert alert-danger" role="alert"> <?= $err['common'] ?></div>
+    <?php endif; ?>
+
     <table class="table">
       <tbody>
         <tr>
