@@ -1,4 +1,6 @@
 <?php
+require_once '../config/config.php';
+
 //引数で与えられた配列を元にプルダウンリストを生成する
 function arrayToSelect($inputName, $srcArray, $selectedIndex = "") {
 
