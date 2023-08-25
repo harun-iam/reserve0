@@ -2,9 +2,9 @@
 require_once(dirname(__FILE__) . '/../config/config.php');
 
 //引数で与えられた配列を元にプルダウンリストを生成する
-function arrayToSelect($inputName, $srcArray, $selectedIndex = "") {
+function arrayToSelect($inputName, $srcArray, $selectedIndex = "", $class = "form-select") {
 
-  $temphtml = "<select class=\"form-select\" name=\"{$inputName}\">" . PHP_EOL;
+  $temphtml = "<select class=\"{$class}\" name=\"{$inputName}\">" . PHP_EOL;
 
   foreach ($srcArray as $key => $val) {
     //キーと選択値を比較して一致したらselectedをつける
